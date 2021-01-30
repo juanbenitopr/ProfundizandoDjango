@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Series</title>
+</head>
+<body>
+
+{% for serie in series %}
+    <div class="serie__container">
+        <span><a href="{% url 'episodes' serie_id=serie.id %}">{{ serie.title }}</a></span>
+        <span>{{ serie.description }}</span>
+    </div>
+{% endfor %}
+
+</body>
+</html>
