@@ -19,7 +19,7 @@ class EpisodeSerializer(ModelSerializer):
 
     class Meta:
         model = Episode
-        fields = ('id', 'name', 'number', 'score')
+        fields = ('id', 'name', 'number', 'score', 'serie')
 
 
 class DetailSerieSerializer(ModelSerializer):

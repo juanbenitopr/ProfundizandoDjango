@@ -15,5 +15,14 @@
       "name": "el comiendo del hombre araña",
       "serie": 1
     }
+  },
+  {
+    "model": "series.scoreepisode",
+    "pk": 1,
+    "fields": {
+      "episode": 1,
+      "user": 1,
+      "score": 3
+    }
   }
 ]

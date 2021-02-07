@@ -24,7 +24,7 @@ class SeriesViewset(ModelViewSet):
 
     @action(detail=True, methods=['PUT'], url_path='set-score', permission_classes=[IsAdminUser])
     def set_score(self, request, pk: int):
-        data = {'serie': pk, 'user': request.user.pk, 'score': int(request.POST['score'])}
+        data = {'serie': pk, 'user': request.user.pk, 'score': int(request.data.get('score'))}
 
         serializer = self.get_serializer_class()(data=data)
 
