@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
@@ -18,3 +19,9 @@ class Episode(models.Model):
 
     def __str__(self):
         return f'{self.name} - {self.number}'
+
+class Score(models.Model):
+    serie = models.ForeignKey(Serie, on_delete=CASCADE)
+    user = models.ForeignKey(User, on_delete=CASCADE)
+    score = models.IntegerField()
+
