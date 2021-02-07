@@ -1,41 +1,31 @@
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
+from rest_framework.fields import SerializerMethodField
+from rest_framework.serializers import ModelSerializer
 
-from series.models import Serie
+from series.models import Serie, Episode
 
 
-class SerieSerializer(serializers.Serializer):
-    title = serializers.CharField(required=True)
-    description = serializers.CharField(required=True)
-    id = serializers.IntegerField(read_only=True)
+class SerieSerializer(ModelSerializer):
+    class Meta:
+        model = Serie
+        fields = ('id', 'title', 'description')
 
-    def validate_title(self, title: str):
-        series = Serie.objects.filter(title=title)
-        if series.exists():
-            raise ValidationError('The title already exists')
-        return title
 
-    def validate_description(self, description: str):
-        if not description:
-            raise ValidationError('The description cannot be blank')
-        return description
+class EpisodeSerializer(ModelSerializer):
 
-    def create(self, **kwargs) -> Serie:
-        serie = Serie.objects.create(**self.validated_data)
-        return serie
+    class Meta:
+        model = Episode
+        fields = ('id', 'name')
 
-    def update(self, **kwargs) -> Serie:
-        for attr, value in self.validated_data.items():
-            setattr(self.instance, attr, value)
 
-        self.instance.save()
-        return self.instance
+class DetailSerieSerializer(ModelSerializer):
+    episodes = EpisodeSerializer(source='episode_set', many=True)
+    # episodes = SerializerMethodField()
 
-    def save(self, **kwargs):
-        if self.instance is not None:
-            self.instance = self.update()
-        else:
-            self.instance = self.create()
+    def get_episodes(self, instance: Serie):
+        return list(instance.episode_set.values('id', 'name'))
 
-        return self.instance
+    class Meta:
+        model = Serie
+        fields = ('id', 'title', 'description', 'episodes')
 

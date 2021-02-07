@@ -1,27 +1,17 @@
-from django.shortcuts import get_object_or_404
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.viewsets import ViewSet
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-from series.api.serializers import SerieSerializer
+from series.api.serializers import SerieSerializer, DetailSerieSerializer
 from series.models import Serie
 
 
-class SeriesViewset(ViewSet):
+class SeriesViewset(ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
+    serializer_class = SerieSerializer
+    queryset = Serie.objects.all()
 
-    def list(self, request):
-        series = SerieSerializer(Serie.objects.all(), many=True)
-        return Response(data=series.data, status=status.HTTP_200_OK)
-
-    def retrieve(self, request, pk=None):
-        serie = get_object_or_404(Serie, pk=pk)
-        return Response(data=SerieSerializer(serie).data, status=status.HTTP_200_OK)
-
-    def create(self, request):
-        serie_serializer = SerieSerializer(data=request.POST)
-        serie_serializer.is_valid(raise_exception=True)
-
-        serie_serializer.save()
-        return self.list(request)
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return DetailSerieSerializer
+        else:
+            return self.serializer_class
