@@ -149,4 +149,6 @@ STATIC_URL = '/static/'
 #     }
 # }
 
+FIXTURE_DIRS = [str(BASE_DIR.joinpath('fixtures/')), ]
+
 LOGIN_URL = '/login/'
