@@ -12,6 +12,13 @@ class Serie(models.Model):
     def __str__(self):
         return self.title
 
+
+class Score(models.Model):
+    serie = models.ForeignKey(Serie, on_delete=CASCADE)
+    user = models.ForeignKey(User, on_delete=CASCADE)
+    score = models.IntegerField()
+
+
 class Episode(models.Model):
     number = models.IntegerField()
     name = models.CharField(max_length=50)
@@ -20,8 +27,9 @@ class Episode(models.Model):
     def __str__(self):
         return f'{self.name} - {self.number}'
 
-class Score(models.Model):
-    serie = models.ForeignKey(Serie, on_delete=CASCADE)
+
+class ScoreEpisode(models.Model):
+    episode = models.ForeignKey(Episode, on_delete=CASCADE)
     user = models.ForeignKey(User, on_delete=CASCADE)
     score = models.IntegerField()
 

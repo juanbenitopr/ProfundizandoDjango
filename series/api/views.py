@@ -4,8 +4,9 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from series.api.serializers import SerieSerializer, DetailSerieSerializer, ScoreSerializer
-from series.models import Serie
+from series.api.serializers import SerieSerializer, DetailSerieSerializer, ScoreSerializer, EpisodeSerializer, \
+    ScoreEpisodeSerializer
+from series.models import Serie, Episode, ScoreEpisode
 
 
 class SeriesViewset(ModelViewSet):
@@ -22,12 +23,34 @@ class SeriesViewset(ModelViewSet):
             return self.serializer_class
 
     @action(detail=True, methods=['PUT'], url_path='set-score', permission_classes=[IsAdminUser])
-    def set_score(self, request, serie_id: int):
-        data = {'serie': serie_id, 'user': request.user.pk, 'score': int(request.POST['score'])}
+    def set_score(self, request, pk: int):
+        data = {'serie': pk, 'user': request.user.pk, 'score': int(request.POST['score'])}
 
         serializer = self.get_serializer_class()(data=data)
 
         serializer.is_valid(raise_exception=True)
 
         serializer.save()
+        return Response(status=status.HTTP_200_OK)
+
+
+class EpisodeViewset(ModelViewSet):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    serializer_class = EpisodeSerializer
+    queryset = Episode.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == 'set_score':
+            return ScoreEpisodeSerializer
+        else:
+            return self.serializer_class
+
+    @action(detail=True, methods=['PUT'], url_path='set-score', permission_classes=[IsAdminUser])
+    def set_score(self, request, pk: int):
+        data = {'episode': pk, 'user': request.user.pk, 'score': int(request.POST['score'])}
+
+        serializer = self.get_serializer_class()(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
         return Response(status=status.HTTP_200_OK)
