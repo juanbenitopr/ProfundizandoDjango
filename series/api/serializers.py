@@ -1,3 +1,4 @@
+from django.db.models import Avg
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer
@@ -20,10 +21,14 @@ class EpisodeSerializer(ModelSerializer):
 
 class DetailSerieSerializer(ModelSerializer):
     episodes = EpisodeSerializer(source='episode_set', many=True)
+    score = SerializerMethodField(source='score')
+
+    def get_score(self, serie: Serie) -> int:
+        return Score.objects.filter(serie_id=serie.id).aggregate(score=Avg('score')).get('score')
 
     class Meta:
         model = Serie
-        fields = ('id', 'title', 'description', 'episodes')
+        fields = ('id', 'title', 'description', 'episodes', 'score')
 
 
 class ScoreSerializer(ModelSerializer):
