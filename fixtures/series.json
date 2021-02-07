@@ -1,0 +1,19 @@
+[
+  {
+    "model": "series.serie",
+    "pk": 1,
+    "fields": {
+      "title": "spiderman",
+      "description": "Un hombre araña"
+    }
+  },
+  {
+    "model": "series.episode",
+    "pk": 1,
+    "fields": {
+      "number": 1,
+      "name": "el comiendo del hombre araña",
+      "serie": 1
+    }
+  }
+]

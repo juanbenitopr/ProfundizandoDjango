@@ -6,27 +6,14 @@ from django.test import TestCase
 # Create your tests here.
 from rest_framework import status
 
-from series.models import Serie, Episode
+from series.models import Serie
 
 
 class TestSeries(TestCase):
-
-    def _generate_user(self) -> User:
-        user = User.objects.create(username=f'fake user {uuid4()}', password='supersegura',
-                                   email=f'fake email {uuid4()}')
-
-        return user
-
-    def _generate_serie(self) -> Serie:
-        serie = Serie.objects.create(title=f'mock serie {uuid4()}', description=f'mock description')
-
-        for i in range(1, 6):
-            Episode.objects.create(serie_id=serie.pk, name=f'mock episode {uuid4()}', number=i + 1)
-
-        return serie
+    fixtures = ['series', 'users']
 
     def test_retrieve_serie(self):
-        serie = self._generate_serie()
+        serie = Serie.objects.first()
 
         response = self.client.get(f'/api/series/{serie.id}/')
 
@@ -40,10 +27,10 @@ class TestSeries(TestCase):
         self.assertIsInstance(response_json.get('description'), str)
         self.assertIsInstance(response_json.get('episodes'), list)
 
-        self.assertEqual(len(response_json.get('episodes')), 5)
+        self.assertEqual(len(response_json.get('episodes')), serie.episode_set.all().count())
 
     def test_create_serie(self):
-        user = self._generate_user()
+        user = User.objects.first()
 
         self.client.force_login(user)
         serie_dict = {'title': f'mock serie {uuid4()}', 'description': f'description serie {uuid4()}'}
