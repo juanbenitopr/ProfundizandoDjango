@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 
-from series.models import Serie, Episode
+from series.models import Serie, Episode, Score
 
 
 class SerieSerializer(ModelSerializer):
@@ -20,12 +20,15 @@ class EpisodeSerializer(ModelSerializer):
 
 class DetailSerieSerializer(ModelSerializer):
     episodes = EpisodeSerializer(source='episode_set', many=True)
-    # episodes = SerializerMethodField()
-
-    def get_episodes(self, instance: Serie):
-        return list(instance.episode_set.values('id', 'name'))
 
     class Meta:
         model = Serie
         fields = ('id', 'title', 'description', 'episodes')
+
+
+class ScoreSerializer(ModelSerializer):
+
+    class Meta:
+        model = Score
+        fields = ('id', 'user', 'serie', 'score')
 

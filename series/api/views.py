@@ -1,7 +1,10 @@
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-from series.api.serializers import SerieSerializer, DetailSerieSerializer
+from series.api.serializers import SerieSerializer, DetailSerieSerializer, ScoreSerializer
 from series.models import Serie
 
 
@@ -13,5 +16,18 @@ class SeriesViewset(ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'retrieve':
             return DetailSerieSerializer
+        if self.action == 'set_score':
+            return ScoreSerializer
         else:
             return self.serializer_class
+
+    @action(detail=True, methods=['PUT'], url_path='set-score', permission_classes=[IsAdminUser])
+    def set_score(self, request, serie_id: int):
+        data = {'serie': serie_id, 'user': request.user.pk, 'score': int(request.POST['score'])}
+
+        serializer = self.get_serializer_class()(data=data)
+
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save()
+        return Response(status=status.HTTP_200_OK)
