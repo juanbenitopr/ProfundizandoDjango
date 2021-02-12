@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'r@mbak6&03p$l-tpt7tx5)ec_(!kk*sgk28h&%lt8n%ri@2h$5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -132,6 +132,36 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LOGGING = {
+    'version': 1,
+    'formatters': {
+        'request': {
+            'class': 'logging.Formatter',
+            'format': '%(asctime)s - %(message)s '
+        }
+    },
+    'handlers': {
+        '400_request': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'request',
+            'stream': sys.stderr,
+            'level': 'WARNING'
+        },
+        '500_request': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'request',
+            'stream': sys.stderr,
+            'level': 'ERROR'
+        }
+    },
+    'loggers': {
+        'django.server': {
+            'level': 'INFO',
+            'handlers':  ['400_request', '500_request']
+        }
+    }
+}
 
 ADMINS = [('JuanB', 'juanbenito.pr@gmail.com')]
 FIXTURE_DIRS = [str(BASE_DIR.joinpath('fixtures/')), ]
