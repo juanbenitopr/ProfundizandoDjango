@@ -10,10 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import datetime
+import sys
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
@@ -133,21 +133,40 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# Con estas líneas se habilita el loggeo de las queries a la base de datos
-# LOGGING = {
-#     'version': 1,
-#     'handlers': {
-#         'console': {
-#             'class': 'logging.StreamHandler',
-#         },
-#     },
-#     'loggers': {
-#         'django.db.backends': {
-#             'level': 'DEBUG',
-#             'handlers': ['console']
-#         },
-#     }
-# }
+LOGGING = {
+    'version': 1,
+    'formatters': {
+        'default': {
+            'class': 'logging.Formatter',
+            'format': '%(asctime)s - %(levelname)s - %(name)s %(message)s '
+        }
+    },
+    'handlers': {
+        'debug': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'default',
+            'stream': sys.stdout,
+        },
+        'error': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'default',
+            'stream': sys.stderr,
+            'level': 'ERROR'
+        },
+        'error_file': {
+            'class': 'logging.FileHandler',
+            'formatter': 'default',
+            'filename': 'error.log',
+            'level': 'ERROR'
+        }
+    },
+    'loggers': {
+        '': {
+            'level': 'DEBUG',
+            'handlers':  ['debug']
+        },
+    }
+}
 
 FIXTURE_DIRS = [str(BASE_DIR.joinpath('fixtures/')), ]
 

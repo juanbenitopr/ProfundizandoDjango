@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
@@ -6,7 +8,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from series.api.serializers import SerieSerializer, DetailSerieSerializer, ScoreSerializer, EpisodeSerializer, \
     ScoreEpisodeSerializer
-from series.models import Serie, Episode, ScoreEpisode
+from series.models import Serie, Episode
 
 
 class SeriesViewset(ModelViewSet):
@@ -14,7 +16,12 @@ class SeriesViewset(ModelViewSet):
     serializer_class = SerieSerializer
     queryset = Serie.objects.all()
 
+    def __init__(self, **kwargs):
+        self.logger = logging.getLogger(__name__)
+        super().__init__(**kwargs)
+
     def get_serializer_class(self):
+        self.logger.error(self.action)
         if self.action == 'retrieve':
             return DetailSerieSerializer
         if self.action == 'set_score':
