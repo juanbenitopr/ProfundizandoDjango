@@ -21,7 +21,6 @@ class SeriesViewset(ModelViewSet):
         super().__init__(**kwargs)
 
     def get_serializer_class(self):
-        self.logger.error(self.action)
         if self.action == 'retrieve':
             return DetailSerieSerializer
         if self.action == 'set_score':

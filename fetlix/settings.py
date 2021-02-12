@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'r@mbak6&03p$l-tpt7tx5)ec_(!kk*sgk28h&%lt8n%ri@2h$5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -133,41 +133,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-LOGGING = {
-    'version': 1,
-    'formatters': {
-        'default': {
-            'class': 'logging.Formatter',
-            'format': '%(asctime)s - %(levelname)s - %(name)s %(message)s '
-        }
-    },
-    'handlers': {
-        'debug': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'default',
-            'stream': sys.stdout,
-        },
-        'error': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'default',
-            'stream': sys.stderr,
-            'level': 'ERROR'
-        },
-        'error_file': {
-            'class': 'logging.FileHandler',
-            'formatter': 'default',
-            'filename': 'error.log',
-            'level': 'ERROR'
-        }
-    },
-    'loggers': {
-        '': {
-            'level': 'DEBUG',
-            'handlers':  ['debug']
-        },
-    }
-}
-
+ADMINS = [('JuanB', 'juanbenito.pr@gmail.com')]
 FIXTURE_DIRS = [str(BASE_DIR.joinpath('fixtures/')), ]
 
 LOGIN_URL = '/login/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
