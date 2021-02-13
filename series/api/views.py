@@ -23,5 +23,5 @@ class SeriesViewset(ViewSet):
         serie_serializer = SerieSerializer(data=request.POST)
         serie_serializer.is_valid(raise_exception=True)
 
-        Serie.objects.create(title=serie_serializer.validated_data['title'], description=request.POST['description'])
+        serie_serializer.save()
         return self.list(request)
