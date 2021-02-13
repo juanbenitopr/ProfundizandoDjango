@@ -47,6 +47,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'middleware.logging_middleware.LoggingMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -138,27 +139,35 @@ LOGGING = {
     'formatters': {
         'request': {
             'class': 'logging.Formatter',
-            'format': '%(asctime)s - %(message)s '
+            'format': 'Request: { timestamp: %(asctime)s - path: %(path)s - user: %(user)s - body: %(body)s }'
+        },
+        'response': {
+            'class': 'logging.Formatter',
+            'format': 'Response: { timestamp: %(asctime)s - path: %(path)s - user: %(user)s - status: %(status)s - body: %(body)s }'
         }
     },
     'handlers': {
-        '400_request': {
+        'requests': {
             'class': 'logging.StreamHandler',
             'formatter': 'request',
-            'stream': sys.stderr,
-            'level': 'WARNING'
+            'stream': sys.stdout,
+            'level': 'DEBUG'
         },
-        '500_request': {
+        'response': {
             'class': 'logging.StreamHandler',
-            'formatter': 'request',
-            'stream': sys.stderr,
-            'level': 'ERROR'
+            'formatter': 'response',
+            'stream': sys.stdout,
+            'level': 'DEBUG'
         }
     },
     'loggers': {
-        'django.server': {
-            'level': 'INFO',
-            'handlers':  ['400_request', '500_request']
+        'middleware.requests': {
+            'level': 'DEBUG',
+            'handlers': ['requests']
+        },
+        'middleware.response': {
+            'level': 'DEBUG',
+            'handlers': ['response']
         }
     }
 }
